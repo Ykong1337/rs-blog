@@ -6,8 +6,9 @@ use once_cell::sync::Lazy;
 use rbatis::Rbatis;
 use rbdc_mysql::driver::MysqlDriver;
 use rocket::fairing::AdHoc;
-use rocket::{Request, routes, catch, catchers};
+use rocket::Request;
 use crate::controller::user_controller;
+use crate::controller::tag_controller;
 
 mod common;
 mod controller;
@@ -16,6 +17,10 @@ mod util;
 
 #[macro_use]
 extern crate rbatis;
+#[macro_use]
+extern crate rocket;
+#[macro_use]
+extern crate serde;
 
 pub static RB: Lazy<Rbatis> = Lazy::new(|| Rbatis::new());
 pub static KEY: Lazy<HS256Key> = Lazy::new(|| HS256Key::generate());
@@ -27,9 +32,9 @@ pub async fn not_found(req: &Request<'_>) -> String {
 
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    fast_log::init(Config::new().console())?;
+    fast_log::init(Config::new().console()).unwrap();
     let rb = Arc::new(&RB);
-    RB.link(MysqlDriver {}, "mysql://root:root@127.0.0.1:3306/rustblog").await.unwrap();
+    RB.init(MysqlDriver {}, "mysql://root:root@127.0.0.1:3306/rustblog").unwrap();
     let _ = rocket::build()
         .mount("/api",
                routes![
@@ -37,6 +42,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
                    user_controller::login,
                    user_controller::del,
                    user_controller::vo_list,
+                   tag_controller::list,
+                   tag_controller::create,
         ])
         .register("/", catchers![not_found])
         .attach(AdHoc::on_ignite("Rbatis Database", |rocket| async move {

@@ -2,8 +2,6 @@ use rocket::serde::json::{Json, Value};
 use rocket::serde::json::serde_json::json;
 use crate::model::user::{User, UserVo};
 use crate::common::res::Res;
-use rocket::{get, post, delete};
-use serde::{Serialize, Deserialize};
 use crate::util::token::{create_token, Token};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -20,7 +18,7 @@ pub struct LoginResData {
 
 #[get("/user/list")]
 pub async fn list() -> Value {
-    let users = User::list().await;
+    let users = User::find_list().await;
     match users {
         Ok(data) => {
             json!(Res{
@@ -41,12 +39,21 @@ pub async fn list() -> Value {
 
 #[get("/user/vo")]
 pub async fn vo_list() -> Value {
-    match User::vo_list().await {
+    match User::find_list().await {
         Ok(data) => {
+            let mut vec = vec![];
+            for i in data {
+                let vo = UserVo{
+                    id: i.id,
+                    username: i.username,
+                    nickname: i.nickname
+                };
+                vec.push(vo);
+            }
             json!(Res{
                 code: 200,
                 msg: "查询成功",
-                data
+                data: vec
             })
         }
         Err(_) => {
