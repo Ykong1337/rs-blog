@@ -22,7 +22,7 @@ pub struct TagVo {
 }
 
 crud!(Tag {});
-impl_select!(Tag {select_by_name(name: &str) -> Option => "`where name like '%#{name}%'`"});
+impl_select!(Tag {select_by_name(name: &str) => "`where name like '%#{name}%'`"});
 impl_select!(Tag {select_by_id(id: usize) -> Option => "`where id = #{id}`"});
 impl_update!(Tag {update_by_id(id: usize) => "`where id = #{id}`"});
 
@@ -31,7 +31,7 @@ impl Tag {
         Tag::select_all(&mut RB.clone()).await
     }
 
-    pub async fn find_by_name(name: &str) -> Result<Option<Tag>, Error> {
+    pub async fn find_by_name(name: &str) -> Result<Vec<Tag>, Error> {
         Tag::select_by_name(&mut RB.clone(), name).await
     }
 

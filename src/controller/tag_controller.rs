@@ -9,6 +9,25 @@ pub struct PostData<'a> {
     pub name: &'a str,
 }
 
+#[get("/tag/<name>")]
+pub async fn find_by_name(name: &str) -> Value {
+    match Tag::find_by_name(name).await {
+        Ok(data) => {
+            json!(Res{
+                code: 200,
+                msg: "查询成功",
+                data
+            })
+        }
+        Err(_) => {
+            json!(Res{
+                code: 500,
+                msg: "查询失败",
+                data: ()
+            })
+        }
+    }
+}
 
 #[get("/tag/list")]
 pub async fn list() -> Value {
