@@ -66,7 +66,10 @@ impl Tag {
                         };
                         Tag::update_by_id(&mut RB.clone(), &new_tag, id).await
                     }
-                    None => Err(Error::E("标签不存在".to_string()))
+                    None => Ok(ExecResult{
+                        rows_affected: 0,
+                        last_insert_id: Default::default()
+                    })
                 }
             }
             Err(e) => {
