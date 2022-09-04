@@ -3,15 +3,15 @@
 
  Source Server         : mysql
  Source Server Type    : MySQL
- Source Server Version : 80029
- Source Host           : localhost:3306
+ Source Server Version : 80030
+ Source Host           : 127.0.0.1:3306
  Source Schema         : rustblog
 
  Target Server Type    : MySQL
- Target Server Version : 80029
+ Target Server Version : 80030
  File Encoding         : 65001
 
- Date: 13/08/2022 20:29:18
+ Date: 04/09/2022 10:41:29
 */
 
 SET NAMES utf8mb4;
@@ -28,17 +28,17 @@ CREATE TABLE `article`  (
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `cate_id` int UNSIGNED NOT NULL,
   `istop` tinyint(1) NULL DEFAULT 0,
-  `created_at` bigint NULL DEFAULT NULL,
-  `updated_at` bigint NULL DEFAULT NULL,
+  `created_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `updated_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `article_FK`(`cate_id` ASC) USING BTREE,
   CONSTRAINT `article_FK` FOREIGN KEY (`cate_id`) REFERENCES `category` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of article
 -- ----------------------------
-INSERT INTO `article` VALUES (1, 'test', 'test', 'test', 1, 0, 1659863112, 1659863112);
+INSERT INTO `article` VALUES (1, 'test', 'test', 'test', 1, 0, '2022-09-04 10:38:02', '2022-09-04 10:38:02');
 
 -- ----------------------------
 -- Table structure for article_to_tag
@@ -51,7 +51,7 @@ CREATE TABLE `article_to_tag`  (
   INDEX `article_to_tag_FK2`(`tag_id` ASC) USING BTREE,
   CONSTRAINT `article_to_tag_FK1` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `article_to_tag_FK2` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of article_to_tag
@@ -65,15 +65,15 @@ DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `created_at` bigint NULL DEFAULT NULL,
-  `updated_at` bigint NULL DEFAULT NULL,
+  `created_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `updated_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of category
 -- ----------------------------
-INSERT INTO `category` VALUES (1, '技术', 1659863071, 1659863071);
+INSERT INTO `category` VALUES (1, '技术', '2022-09-04 10:38:02', '2022-09-04 10:38:02');
 
 -- ----------------------------
 -- Table structure for tag
@@ -82,15 +82,16 @@ DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `created_at` bigint NULL DEFAULT NULL,
-  `updated_at` bigint NULL DEFAULT NULL,
+  `created_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `updated_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tag
 -- ----------------------------
-INSERT INTO `tag` VALUES (1, 'test', 1659863091, 1659863091);
+INSERT INTO `tag` VALUES (1, 'test', '2022-09-04 10:38:02', '2022-09-04 10:38:02');
+INSERT INTO `tag` VALUES (2, 'Java', '2022-09-04 10:38:02', '2022-09-04 10:38:02');
 
 -- ----------------------------
 -- Table structure for user
@@ -102,7 +103,7 @@ CREATE TABLE `user`  (
   `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `nickname` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user

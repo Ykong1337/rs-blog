@@ -22,7 +22,7 @@ pub struct TagVo {
 }
 
 crud!(Tag {});
-impl_select!(Tag {select_by_name(name: &str) => "`where name like '%#{name}%'`"});
+impl_select!(Tag {select_by_name(name: &str) => "`where name like '%${name}%'`"});
 impl_select!(Tag {select_by_id(id: usize) -> Option => "`where id = #{id}`"});
 impl_update!(Tag {update_by_id(id: usize) => "`where id = #{id}`"});
 

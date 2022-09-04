@@ -13,6 +13,13 @@ pub struct PostData<'a> {
 pub async fn find_by_name(name: &str) -> Value {
     match Tag::find_by_name(name).await {
         Ok(data) => {
+            if data.is_empty() {
+                return json!(Res{
+                    code: 400,
+                    msg: "没有数据",
+                    data
+                });
+            }
             json!(Res{
                 code: 200,
                 msg: "查询成功",

@@ -46,6 +46,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                    tag_controller::create,
                    tag_controller::update,
                    tag_controller::del,
+                   tag_controller::find_by_name,
         ])
         .register("/", catchers![not_found])
         .attach(AdHoc::on_ignite("Rbatis Database", |rocket| async move {
