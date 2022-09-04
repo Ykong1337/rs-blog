@@ -9,7 +9,7 @@ pub struct PostData<'a> {
     pub name: &'a str,
 }
 
-#[get("/tag/<name>")]
+#[get("/tag/find/<name>")]
 pub async fn find_by_name(name: &str) -> Value {
     match Tag::find_by_name(name).await {
         Ok(data) => {
@@ -52,6 +52,33 @@ pub async fn list() -> Value {
                 msg: "查询失败",
                 data: ()
            })
+        }
+    }
+}
+
+#[get("/tag/list_count")]
+pub async fn find_list_count() -> Value {
+    match Tag::find_list_by_count().await {
+        Ok(data) => {
+            if data.is_empty() {
+                return json!(Res{
+                    code: 400,
+                    msg: "没有数据",
+                    data
+                });
+            }
+            json!(Res{
+                code: 200,
+                msg: "查询成功",
+                data
+            })
+        }
+        Err(_) => {
+            json!(Res{
+                code: 500,
+                msg: "查询失败",
+                data: ()
+            })
         }
     }
 }
