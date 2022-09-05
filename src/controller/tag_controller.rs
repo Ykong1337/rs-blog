@@ -14,21 +14,11 @@ pub async fn find_by_name(name: &str) -> Value {
     match Tag::find_by_name(name).await {
         Ok(data) => {
             if data.is_empty() {
-                return json!(Res{
-                    code: 400,
-                    msg: "没有数据",
-                    data
-                });
+                return json!(Res::none());
             }
-            json!(Res{
-                code: 200,
-                msg: "查询成功",
-                data
-            })
+            json!(Res::ok(data))
         }
-        Err(_) => {
-            json!(Res::err())
-        }
+        Err(_) => json!(Res::err())
     }
 }
 
@@ -36,19 +26,9 @@ pub async fn find_by_name(name: &str) -> Value {
 pub async fn list() -> Value {
     match Tag::find_list_all().await {
         Ok(data) => {
-            json!(Res{
-               code: 200,
-               msg: "查询成功",
-               data
-           })
+            json!(Res::ok(data))
         }
-        Err(_) => {
-            json!(Res{
-                code: 400,
-                msg: "查询失败",
-                data: ()
-           })
-        }
+        Err(_) => json!(Res::err())
     }
 }
 
@@ -57,25 +37,11 @@ pub async fn find_list_count() -> Value {
     match Tag::find_list_by_count().await {
         Ok(data) => {
             if data.is_empty() {
-                return json!(Res{
-                    code: 400,
-                    msg: "没有数据",
-                    data
-                });
+                return json!(Res::none());
             }
-            json!(Res{
-                code: 200,
-                msg: "查询成功",
-                data
-            })
+            json!(Res::ok(data))
         }
-        Err(_) => {
-            json!(Res{
-                code: 500,
-                msg: "查询失败",
-                data: ()
-            })
-        }
+        Err(_) => json!(Res::err())
     }
 }
 
@@ -85,25 +51,11 @@ pub async fn create(post_data: Json<PostData<'_>>, _t: Token) -> Value {
     match Tag::create(name).await {
         Ok(data) => {
             if data.rows_affected > 0 {
-                return json!(Res{
-                    code: 200,
-                    msg: "标签添加成功",
-                    data
-                });
+                return json!(Res::ok(data));
             }
-            json!(Res{
-                code: 400,
-                msg: "已存在",
-                data
-            })
+            json!(Res::none())
         }
-        Err(_) => {
-            json!(Res{
-                code: 500,
-                msg: "添加失败",
-                data: ()
-            })
-        }
+        Err(_) => json!(Res::err())
     }
 }
 
@@ -112,25 +64,11 @@ pub async fn update(id: usize, post_data: Json<PostData<'_>>, _t: Token) -> Valu
     match Tag::update(id, post_data.name).await {
         Ok(data) => {
             if data.rows_affected > 0 {
-                return json!(Res{
-                    code: 200,
-                    msg: "修改成功",
-                    data
-                });
+                return json!(Res::ok(data));
             }
-            json!(Res{
-                code: 400,
-                msg: "不存在",
-                data: ()
-            })
+            json!(Res::none())
         }
-        Err(_) => {
-            json!(Res{
-                code: 500,
-                msg: "服务错误",
-                data: ()
-            })
-        }
+        Err(_) => json!(Res::err())
     }
 }
 
@@ -139,24 +77,10 @@ pub async fn del(name: &str, _t: Token) -> Value {
     match Tag::del(name).await {
         Ok(data) => {
             if data.rows_affected > 0 {
-                return json!(Res{
-                    code: 200,
-                    msg: "删除成功",
-                    data
-                });
+                return json!(Res::ok(data));
             }
-            json!(Res{
-                code: 400,
-                msg: "不存在",
-                data: ()
-            })
+            json!(Res::none())
         }
-        Err(_) => {
-            json!(Res{
-                code: 500,
-                msg: "服务错误",
-                data: ()
-            })
-        }
+        Err(_) => json!(Res::err())
     }
 }

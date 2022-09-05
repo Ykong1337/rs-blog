@@ -1,3 +1,4 @@
+use rocket::futures::future::err;
 use rocket::serde::json::{Json, Value};
 use rocket::serde::json::serde_json::json;
 use crate::model::user::{User, UserVo};
@@ -21,19 +22,9 @@ pub async fn list() -> Value {
     let users = User::find_list().await;
     match users {
         Ok(data) => {
-            json!(Res{
-                code: 200,
-                msg: "查询成功",
-                data
-            })
+            json!(Res::ok(data))
         }
-        Err(_) => {
-            json!(Res{
-                code: 400,
-                msg: "查询失败",
-                data: ()
-            })
-        }
+        Err(_) => json!(Res::err())
     }
 }
 
@@ -50,19 +41,9 @@ pub async fn vo_list() -> Value {
                 };
                 vec.push(vo);
             }
-            json!(Res{
-                code: 200,
-                msg: "查询成功",
-                data: vec
-            })
+            json!(Res::ok(data))
         }
-        Err(_) => {
-            json!(Res{
-                code: 400,
-                msg: "查询失败",
-                data: ()
-            })
-        }
+        Err(_) => json!(err())
     }
 }
 
@@ -79,11 +60,7 @@ pub async fn login(post_data: Json<PostData<'_>>) -> Value {
                         username,
                         token,
                     };
-                    json!(Res{
-                        code: 200,
-                        msg: "登陆成功",
-                        data
-                    })
+                    json!(Res::ok(data))
                 }
                 None => {
                     json!(Res{
@@ -95,11 +72,7 @@ pub async fn login(post_data: Json<PostData<'_>>) -> Value {
             }
         }
         Err(_) => {
-            json!(Res{
-                code: 500,
-                msg: "服务错误",
-                data: ()
-            })
+            json!(Res::err())
         }
     }
 }
@@ -108,26 +81,14 @@ pub async fn login(post_data: Json<PostData<'_>>) -> Value {
 pub async fn del(username: &str, _t: Token) -> Value {
     let res = User::del(username).await;
     match res {
-        Ok(t) => {
-            if t.rows_affected > 0 {
-                return json!(Res{
-                    code: 200,
-                    msg: "删除成功",
-                    data: t.rows_affected
-                });
+        Ok(data) => {
+            if data.rows_affected > 0 {
+                return json!(Res::ok(data));
             }
-            json!(Res{
-                code: 400,
-                msg: "不存在",
-                data: ()
-            })
+            json!(Res::none())
         }
         Err(_) => {
-            json!(Res{
-                code: 400,
-                msg: "删除失败",
-                data: ()
-            })
+            json!(Res::err())
         }
     }
 }
