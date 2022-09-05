@@ -16,11 +16,7 @@ pub async fn find_by_name(name: &str) -> Value {
                     data: ()
                 });
             }
-            json!(Res {
-                code: 200,
-                msg: "查询成功",
-                data
-            })
+            json!(Res::ok(data))
         }
         Err(_) => json!(Res {
             code: 500,
@@ -41,11 +37,7 @@ pub async fn list() -> Value {
                     data: ()
                 });
             }
-            json!(Res {
-                code: 200,
-                msg: "查询成功",
-                data
-            })
+            json!(Res::ok(data))
         }
         Err(_) => json!(Res {
             code: 500,
@@ -66,11 +58,7 @@ pub async fn list_count() -> Value {
                     data: ()
                 });
             }
-            json!(Res {
-                code: 200,
-                msg: "查询成功",
-                data
-            })
+            json!(Res::ok(data))
         }
         Err(_) => json!(Res {
             code: 500,
@@ -86,11 +74,7 @@ pub async fn create(post_data: Json<PostData<'_>>, _t: Token) -> Value {
     match Category::create(name).await {
         Ok(data) => {
             if data.rows_affected > 0 {
-                return json!(Res {
-                    code: 200,
-                    msg: "操作成功",
-                    data
-                });
+                return json!(Res::ok(data));
             }
             json!(Res {
                 code: 400,
@@ -112,11 +96,7 @@ pub async fn update(id: usize, post_data: Json<PostData<'_>>, _t: Token) -> Valu
     match Category::update(id, new_name).await {
         Ok(data) => {
             if data.rows_affected > 0 {
-                return json!(Res {
-                    code: 200,
-                    msg: "操作成功",
-                    data
-                });
+                return json!(Res::ok(data));
             }
             json!(Res {
                 code: 400,
@@ -137,11 +117,7 @@ pub async fn del(name: &str, _t: Token) -> Value {
     match Category::del(name).await {
         Ok(data) => {
             if data.rows_affected > 0 {
-                return json!(Res {
-                    code: 200,
-                    msg: "操作成功",
-                    data
-                });
+                return json!(Res::ok(data));
             }
             json!(Res {
                 code: 400,

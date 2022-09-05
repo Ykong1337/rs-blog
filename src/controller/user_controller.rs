@@ -28,11 +28,7 @@ pub async fn list() -> Value {
                     data: ()
                 });
             }
-            json!(Res {
-                code: 200,
-                msg: "查询成功",
-                data
-            })
+            json!(Res::ok(data))
         }
         Err(_) => json!(Res {
             code: 500,
@@ -62,11 +58,7 @@ pub async fn vo_list() -> Value {
                 };
                 vec.push(vo);
             }
-            json!(Res {
-                code: 200,
-                msg: "查询成功",
-                data: vec
-            })
+            json!(Res::ok(vec))
         }
         Err(_) => json!(Res {
             code: 500,
@@ -89,11 +81,7 @@ pub async fn login(post_data: Json<PostData<'_>>) -> Value {
                         username,
                         token,
                     };
-                    json!(Res {
-                        code: 200,
-                        msg: "登陆成功",
-                        data
-                    })
+                    json!(Res::ok(data))
                 }
                 None => json!(Res{
                     code: 400,
@@ -116,11 +104,7 @@ pub async fn del(username: &str, _t: Token) -> Value {
     match res {
         Ok(data) => {
             if data.rows_affected > 0 {
-                return json!(Res {
-                    code: 200,
-                    msg: "操作成功",
-                    data
-                });
+                return json!(Res::ok(data));
             }
             json!(Res {
                 code: 400,

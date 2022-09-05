@@ -4,3 +4,13 @@ pub struct Res<'a, T> {
     pub msg: &'a str,
     pub data: T,
 }
+
+impl<T> Res<'_, T> {
+    pub fn ok(data: T) -> Res<'static, T> {
+        Res {
+            code: 200,
+            msg: "操作成功",
+            data,
+        }
+    }
+}
