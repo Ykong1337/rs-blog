@@ -27,14 +27,14 @@ pub fn encode(password: &str) -> String {
 
 impl User {
     pub async fn login(username: &str, password: &str) -> Result<Option<User>, Error> {
-        User::select_username_password(&mut RB.clone(), username, encode(password).as_str()).await
+        Self::select_username_password(&mut RB.clone(), username, encode(password).as_str()).await
     }
 
     pub async fn find_list() -> Result<Vec<User>, Error> {
-        User::select_all(&mut RB.clone()).await
+        Self::select_all(&mut RB.clone()).await
     }
 
     pub async fn del(username: &str) -> Result<ExecResult, Error> {
-        User::delete_by_column(&mut RB.clone(), "username", username).await
+        Self::delete_by_column(&mut RB.clone(), "username", username).await
     }
 }

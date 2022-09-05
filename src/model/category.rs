@@ -26,11 +26,11 @@ impl_update!(Category {update_by_id(id: usize) => "`where id = #{id}`"});
 
 impl Category {
     pub async fn find_list_all() -> Result<Vec<Category>, Error> {
-        Category::select_all(&mut RB.clone()).await
+        Self::select_all(&mut RB.clone()).await
     }
 
     pub async fn find_by_name(name: &str) -> Result<Vec<Category>, Error> {
-        Category::select_by_name(&mut RB.clone(), name).await
+        Self::select_by_name(&mut RB.clone(), name).await
     }
 
     pub async fn find_list_by_count() -> Result<Vec<CategoryVo>, Error> {
@@ -45,7 +45,7 @@ impl Category {
             create_at: Some(FastDateTime::now()),
             update_at: Some(FastDateTime::now()),
         };
-        Category::insert(&mut RB.clone(), &category).await
+        Self::insert(&mut RB.clone(), &category).await
     }
 
     pub async fn update(id: usize, new_name: &str) -> Result<ExecResult, Error> {
@@ -59,7 +59,7 @@ impl Category {
                             update_at: Some(FastDateTime::now()),
                             ..category
                         };
-                        Category::update_by_id(&mut RB.clone(), &new_category, id).await
+                        Self::update_by_id(&mut RB.clone(), &new_category, id).await
                     }
                     None => Ok(ExecResult {
                         rows_affected: 0,
@@ -74,6 +74,6 @@ impl Category {
     }
 
     pub async fn del(name: &str) -> Result<ExecResult, Error> {
-        Category::delete_by_column(&mut RB.clone(), "name", name).await
+        Self::delete_by_column(&mut RB.clone(), "name", name).await
     }
 }

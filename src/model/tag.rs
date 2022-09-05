@@ -28,11 +28,11 @@ impl_update!(Tag {update_by_id(id: usize) => "`where id = #{id}`"});
 
 impl Tag {
     pub async fn find_list_all() -> Result<Vec<Tag>, Error> {
-        Tag::select_all(&mut RB.clone()).await
+        Self::select_all(&mut RB.clone()).await
     }
 
     pub async fn find_by_name(name: &str) -> Result<Vec<Tag>, Error> {
-        Tag::select_by_name(&mut RB.clone(), name).await
+        Self::select_by_name(&mut RB.clone(), name).await
     }
 
     pub async fn find_list_by_count() -> Result<Vec<TagVo>, Error> {
@@ -50,7 +50,7 @@ impl Tag {
             created_at: Some(FastDateTime::now()),
             updated_at: Some(FastDateTime::now()),
         };
-        Tag::insert(&mut RB.clone(), &tag).await
+        Self::insert(&mut RB.clone(), &tag).await
     }
 
     pub async fn update(id: usize, new_name: &str) -> Result<ExecResult, Error> {
@@ -64,11 +64,11 @@ impl Tag {
                             updated_at: Some(FastDateTime::now()),
                             ..tag
                         };
-                        Tag::update_by_id(&mut RB.clone(), &new_tag, id).await
+                        Self::update_by_id(&mut RB.clone(), &new_tag, id).await
                     }
-                    None => Ok(ExecResult{
+                    None => Ok(ExecResult {
                         rows_affected: 0,
-                        last_insert_id: Default::default()
+                        last_insert_id: Default::default(),
                     })
                 }
             }
@@ -79,6 +79,6 @@ impl Tag {
     }
 
     pub async fn del(name: &str) -> Result<ExecResult, Error> {
-        Tag::delete_by_column(&mut RB.clone(), "name", name).await
+        Self::delete_by_column(&mut RB.clone(), "name", name).await
     }
 }
