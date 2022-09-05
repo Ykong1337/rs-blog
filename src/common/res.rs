@@ -9,7 +9,7 @@ impl<T: 'static> Res<'_, T> {
     pub fn ok(data: T) -> Res<'static, T> {
         Res {
             code: 200,
-            msg: "操作成功",
+            msg: "success",
             data,
         }
     }
