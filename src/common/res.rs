@@ -5,7 +5,7 @@ pub struct Res<'a, T> {
     pub data: T,
 }
 
-impl Res<'_, T> {
+impl<T> Res<'_, T> {
     pub fn ok(data: T) -> Self {
         Res {
             code: 200,
@@ -14,7 +14,7 @@ impl Res<'_, T> {
         }
     }
 
-    pub fn none() -> Self {
+    pub fn none(_t: T) -> Self {
         Res {
             code: 400,
             msg: "数据为空或已存在",
@@ -22,7 +22,7 @@ impl Res<'_, T> {
         }
     }
 
-    pub fn err() -> Self {
+    pub fn err(_t: T) -> Self {
         Res {
             code: 500,
             msg: "服务错误",

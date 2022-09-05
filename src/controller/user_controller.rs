@@ -70,9 +70,7 @@ pub async fn login(post_data: Json<PostData<'_>>) -> Value {
                 }
             }
         }
-        Err(_) => {
-            json!(Res::err())
-        }
+        Err(_) => json!(Res::err())
     }
 }
 
@@ -86,8 +84,6 @@ pub async fn del(username: &str, _t: Token) -> Value {
             }
             json!(Res::none())
         }
-        Err(_) => {
-            json!(Res::err())
-        }
+        Err(_) => json!(Res::err())
     }
 }
