@@ -5,7 +5,7 @@ pub struct Res<'a, T> {
     pub data: T,
 }
 
-impl<T> Res<'_, T> {
+impl<T: 'static> Res<'_, T> {
     pub fn ok(data: T) -> Res<'static, T> {
         Res {
             code: 200,
