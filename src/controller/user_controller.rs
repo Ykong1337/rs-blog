@@ -21,9 +21,24 @@ pub async fn list() -> Value {
     let users = User::find_list().await;
     match users {
         Ok(data) => {
-            json!(Res::ok(data))
+            if data.is_empty() {
+                return json!(Res {
+                    code: 400,
+                    msg: "数据为空",
+                    data: ()
+                });
+            }
+            json!(Res {
+                code: 200,
+                msg: "查询成功",
+                data
+            })
         }
-        Err(_) => json!(Res::err())
+        Err(_) => json!(Res {
+            code: 500,
+            msg: "服务错误",
+            data: ()
+        })
     }
 }
 
@@ -31,6 +46,13 @@ pub async fn list() -> Value {
 pub async fn vo_list() -> Value {
     match User::find_list().await {
         Ok(data) => {
+            if data.is_empty() {
+                return json!(Res {
+                    code: 400,
+                    msg: "数据为空",
+                    data: ()
+                });
+            }
             let mut vec = vec![];
             for i in data {
                 let vo = UserVo {
@@ -40,9 +62,17 @@ pub async fn vo_list() -> Value {
                 };
                 vec.push(vo);
             }
-            json!(Res::ok(data))
+            json!(Res {
+                code: 200,
+                msg: "查询成功",
+                data: vec
+            })
         }
-        Err(_) => json!(Res::err())
+        Err(_) => json!(Res {
+            code: 500,
+            msg: "服务错误",
+            data: ()
+        })
     }
 }
 
@@ -59,18 +89,24 @@ pub async fn login(post_data: Json<PostData<'_>>) -> Value {
                         username,
                         token,
                     };
-                    json!(Res::ok(data))
-                }
-                None => {
-                    json!(Res{
-                        code: 400,
-                        msg: "用户名或密码错误",
-                        data: ()
+                    json!(Res {
+                        code: 200,
+                        msg: "登陆成功",
+                        data
                     })
                 }
+                None => json!(Res{
+                    code: 400,
+                    msg: "用户名或密码错误",
+                    data: ()
+                })
             }
         }
-        Err(_) => json!(Res::err())
+        Err(_) => json!(Res {
+            code: 500,
+            msg: "服务错误",
+            data: ()
+        })
     }
 }
 
@@ -80,10 +116,22 @@ pub async fn del(username: &str, _t: Token) -> Value {
     match res {
         Ok(data) => {
             if data.rows_affected > 0 {
-                return json!(Res::ok(data));
+                return json!(Res {
+                    code: 200,
+                    msg: "操作成功",
+                    data
+                });
             }
-            json!(Res::none())
+            json!(Res {
+                code: 400,
+                msg: "数据不存在",
+                data
+            })
         }
-        Err(_) => json!(Res::err())
+        Err(_) => json!(Res {
+            code: 500,
+            msg: "服务错误",
+            data: ()
+        })
     }
 }

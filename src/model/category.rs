@@ -7,16 +7,16 @@ use crate::RB;
 pub struct Category {
     pub id: Option<usize>,
     pub name: Option<String>,
-    pub create_at: Option<FastDateTime>,
-    pub update_at: Option<FastDateTime>,
+    pub created_at: Option<FastDateTime>,
+    pub updated_at: Option<FastDateTime>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CategoryVo {
     pub id: Option<usize>,
     pub name: Option<String>,
-    pub create_at: Option<FastDateTime>,
-    pub update_at: Option<FastDateTime>,
+    pub created_at: Option<FastDateTime>,
+    pub updated_at: Option<FastDateTime>,
     pub blog_count: Option<usize>,
 }
 crud!(Category {});
@@ -42,8 +42,8 @@ impl Category {
         let category = Category {
             id: None,
             name: Some(name.to_string()),
-            create_at: Some(FastDateTime::now()),
-            update_at: Some(FastDateTime::now()),
+            created_at: Some(FastDateTime::now()),
+            updated_at: Some(FastDateTime::now()),
         };
         Self::insert(&mut RB.clone(), &category).await
     }
@@ -56,7 +56,7 @@ impl Category {
                     Some(category) => {
                         let new_category = Category {
                             name: Some(new_name.to_string()),
-                            update_at: Some(FastDateTime::now()),
+                            updated_at: Some(FastDateTime::now()),
                             ..category
                         };
                         Self::update_by_id(&mut RB.clone(), &new_category, id).await
