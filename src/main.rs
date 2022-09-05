@@ -9,6 +9,7 @@ use rocket::fairing::AdHoc;
 use rocket::Request;
 use crate::controller::user_controller;
 use crate::controller::tag_controller;
+use crate::controller::category_controller;
 
 mod common;
 mod controller;
@@ -48,6 +49,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
                    tag_controller::del,
                    tag_controller::find_by_name,
                    tag_controller::find_list_count,
+                   category_controller::find_by_name,
+                   category_controller::list,
+                   category_controller::list_count,
+                   category_controller::create,
+                   category_controller::update,
+                   category_controller::del,
         ])
         .register("/", catchers![not_found])
         .attach(AdHoc::on_ignite("Rbatis Database", |rocket| async move {
