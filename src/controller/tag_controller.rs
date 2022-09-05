@@ -27,11 +27,7 @@ pub async fn find_by_name(name: &str) -> Value {
             })
         }
         Err(_) => {
-            json!(Res{
-                code: 500,
-                msg: "查询失败",
-                data: ()
-            })
+            json!(Res::err())
         }
     }
 }
@@ -87,18 +83,18 @@ pub async fn find_list_count() -> Value {
 pub async fn create(post_data: Json<PostData<'_>>, _t: Token) -> Value {
     let name = post_data.name;
     match Tag::create(name).await {
-        Ok(t) => {
-            if t.rows_affected > 0 {
+        Ok(data) => {
+            if data.rows_affected > 0 {
                 return json!(Res{
                     code: 200,
                     msg: "标签添加成功",
-                    data: t.rows_affected
+                    data
                 });
             }
             json!(Res{
                 code: 400,
                 msg: "已存在",
-                data: t.rows_affected
+                data
             })
         }
         Err(_) => {
@@ -114,12 +110,12 @@ pub async fn create(post_data: Json<PostData<'_>>, _t: Token) -> Value {
 #[put("/tag/<id>", data = "<post_data>")]
 pub async fn update(id: usize, post_data: Json<PostData<'_>>, _t: Token) -> Value {
     match Tag::update(id, post_data.name).await {
-        Ok(t) => {
-            if t.rows_affected > 0 {
+        Ok(data) => {
+            if data.rows_affected > 0 {
                 return json!(Res{
                     code: 200,
                     msg: "修改成功",
-                    data: t.rows_affected
+                    data
                 });
             }
             json!(Res{
@@ -141,12 +137,12 @@ pub async fn update(id: usize, post_data: Json<PostData<'_>>, _t: Token) -> Valu
 #[delete("/tag/<name>")]
 pub async fn del(name: &str, _t: Token) -> Value {
     match Tag::del(name).await {
-        Ok(t) => {
-            if t.rows_affected > 0 {
+        Ok(data) => {
+            if data.rows_affected > 0 {
                 return json!(Res{
                     code: 200,
                     msg: "删除成功",
-                    data: t.rows_affected
+                    data
                 });
             }
             json!(Res{
@@ -157,7 +153,7 @@ pub async fn del(name: &str, _t: Token) -> Value {
         }
         Err(_) => {
             json!(Res{
-                code: 200,
+                code: 500,
                 msg: "服务错误",
                 data: ()
             })

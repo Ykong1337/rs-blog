@@ -43,10 +43,10 @@ pub async fn vo_list() -> Value {
         Ok(data) => {
             let mut vec = vec![];
             for i in data {
-                let vo = UserVo{
+                let vo = UserVo {
                     id: i.id,
                     username: i.username,
-                    nickname: i.nickname
+                    nickname: i.nickname,
                 };
                 vec.push(vo);
             }
