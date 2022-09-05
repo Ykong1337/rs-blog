@@ -1,4 +1,3 @@
-use rocket::futures::future::err;
 use rocket::serde::json::{Json, Value};
 use rocket::serde::json::serde_json::json;
 use crate::model::user::{User, UserVo};
@@ -43,7 +42,7 @@ pub async fn vo_list() -> Value {
             }
             json!(Res::ok(data))
         }
-        Err(_) => json!(err())
+        Err(_) => json!(Res::err())
     }
 }
 

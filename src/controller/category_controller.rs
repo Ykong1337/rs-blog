@@ -58,7 +58,7 @@ pub async fn create(post_data: Json<PostData<'_>>, _t: Token) -> Value {
     }
 }
 
-#[put("/category/<id>", data = "post_data")]
+#[put("/category/<id>", data = "<post_data>")]
 pub async fn update(id: usize, post_data: Json<PostData<'_>>, _t: Token) -> Value {
     let new_name = post_data.name;
     match Category::update(id, new_name).await {

@@ -5,7 +5,7 @@ pub struct Res<'a, T> {
     pub data: T,
 }
 
-impl Res<T> {
+impl Res<'_, T> {
     pub fn ok(data: T) -> Self {
         Res {
             code: 200,
