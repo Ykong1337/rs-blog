@@ -17,7 +17,7 @@ impl Res<T> {
     pub fn none() -> Self {
         Res {
             code: 400,
-            msg: "数据为空",
+            msg: "数据为空或已存在",
             data: (),
         }
     }
