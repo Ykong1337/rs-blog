@@ -1,7 +1,6 @@
 use rbatis::rbdc::datetime::FastDateTime;
 use rbatis::rbdc::db::ExecResult;
 use rbatis::rbdc::Error;
-use rbs::Value::U64;
 use crate::RB;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
