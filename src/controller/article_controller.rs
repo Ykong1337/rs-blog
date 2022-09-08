@@ -9,16 +9,16 @@ use crate::util::token::Token;
 #[derive(Debug, PartialEq, FromForm)]
 pub struct Page {
     page: usize,
-    perPage: usize,
+    per_page: usize,
 }
 
 #[get("/articles?<page..>")]
 pub async fn list(page: Page) -> Value {
-    let page_size = page.perPage;
+    let page_size = page.per_page;
     let current_page = page.page;
     let total = Article::find_total().await.unwrap();
 
-    let per_page = page.perPage;
+    let per_page = page.per_page;
     let page = (page.page - 1) * per_page;
     let articles = Article::find_all_page_with_category(&page.to_string(), &per_page.to_string()).await;
 
