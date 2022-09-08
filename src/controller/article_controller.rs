@@ -3,7 +3,7 @@ use rocket::form::FromForm;
 use rocket::serde::json::serde_json::json;
 use rocket::serde::json::{Json, Value};
 use crate::common::res::{Res, Resp};
-use crate::model::article::{Article, ArticleVO};
+use crate::model::article::{Article, ArticleForUpdateVo, ArticleVO};
 use crate::util::token::Token;
 
 #[derive(Debug, PartialEq, FromForm)]
@@ -117,6 +117,31 @@ pub async fn create(post_data: Json<PostOrPutArticleData<'_>>, _t: Token) -> Val
 #[delete("/article/<id>")]
 pub async fn delete(id: usize, _t: Token) -> Value {
     let res = Article::remove(id).await;
+    match res {
+        Ok(_) => json!(Res {
+            code: 200,
+            msg: "success",
+            data: ()
+        }),
+        Err(_) => json!(Res {
+            code: 500,
+            msg: "error",
+            data: ()
+        })
+    }
+}
+
+#[put("/article/<id>", data = "<put_data>")]
+pub async fn update(id: usize, put_data: Json<PostOrPutArticleData<'_>>, _t: Token) -> Value {
+    let art = ArticleForUpdateVo {
+        title: put_data.title.to_string(),
+        description: put_data.description.to_string(),
+        content: put_data.content.to_string(),
+        cate_id: put_data.cate_id,
+        tags: put_data.tags.clone(),
+    };
+
+    let res = Article::update(id, art).await;
     match res {
         Ok(_) => json!(Res {
             code: 200,

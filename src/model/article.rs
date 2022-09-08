@@ -94,16 +94,16 @@ impl Article {
         match art_res {
             Ok(res) => {
                 let new_art_id = res.last_insert_id;
-                for i in tag_ids.iter() {
-                    tx.exec("INSERT INTO article_to_tag (article_id,tag_id) VALUE (?,?);", vec![to_value!(new_art_id.as_u64()), to_value!(*i)]).await?;
+                for i in tag_ids {
+                    tx.exec("INSERT INTO article_to_tag (article_id,tag_id) VALUE (?,?);",
+                            vec![to_value!(new_art_id.as_u64()), to_value!(i)]).await?;
                 }
             }
             Err(_) => {
                 tx.rollback().await.unwrap();
-                println!("rollback");
+                println!("rollback")
             }
-        };
-
+        }
         tx.commit().await.unwrap();
         println!("commit");
         drop(tx);
@@ -112,32 +112,75 @@ impl Article {
     }
 
     pub async fn remove(id: usize) -> Result<(), Error> {
+        let tx = RB.acquire_begin().await.unwrap();
+        let mut tx = tx.defer_async(|mut tx| async move {
+            if !tx.done {
+                tx.rollback().await.unwrap();
+                println!("rollback")
+            }
+        });
         let art = Self::find_by_id(id).await;
         match art {
             Ok(t) => {
                 match t {
                     Some(data) => {
-                        let tx = RB.acquire_begin().await.unwrap();
-                        let mut tx = tx.defer_async(|mut tx| async move {
-                            if !tx.done {
-                                tx.rollback().await.unwrap();
-                                println!("rollback");
-                            }
-                        });
-                        tx.exec("DELETE FROM article_to_tag WHERE article_id = ?;", vec![to_value!(data.id)]).await?;
-                        tx.exec("DELETE FROM article WHERE id = ?;", vec![to_value!(id)]).await?;
-
-                        tx.commit().await.unwrap();
-                        println!("commit");
-                        drop(tx);
-                        sleep(Duration::from_secs(1));
-
-                        Ok(())
+                        tx.exec("DELETE FROM article_to_tag WHERE article_id = ?;",
+                                vec![to_value!(data.id)]).await?;
+                        tx.exec("DELETE FROM article WHERE id = ?;",
+                                vec![to_value!(id)]).await?;
                     }
                     None => return Err(Error::E("文章不存在".to_string()))
                 }
             }
-            Err(_) => return Err(Error::E("error".to_string()))
+            Err(_) => {
+                tx.rollback().await.unwrap();
+                println!("rollback")
+            }
         }
+        tx.commit().await.unwrap();
+        println!("commit");
+        drop(tx);
+        sleep(Duration::from_secs(1));
+        Ok(())
+    }
+
+    pub async fn update(id: usize, put_art: ArticleForUpdateVo) -> Result<(), Error> {
+        let tx = RB.acquire_begin().await.unwrap();
+        let mut tx = tx.defer_async(|mut tx| async move {
+            if !tx.done {
+                tx.rollback().await.unwrap();
+                println!("rollback")
+            }
+        });
+
+        let old_art = Self::find_by_id(id).await;
+        match old_art {
+            Ok(t) => {
+                match t {
+                    Some(data) => {
+                        let tags = put_art.tags;
+
+                        tx.exec("DELETE FROM article_to_tag WHERE article_id = ?;",
+                                vec![to_value!(data.id)]).await?;
+                        for i in tags {
+                            tx.exec("INSERT INTO article_to_tag VALUES (?,?);",
+                                    vec![to_value!(data.id), to_value!(i)]).await?;
+                        }
+                        tx.exec("UPDATE article SET title = ?,description = ?,content = ?,cate_id = ?,updated_at = ? WHERE id = ?;",
+                                vec![to_value!(put_art.title), to_value!(put_art.description), to_value!(put_art.content), to_value!(put_art.cate_id), to_value!(FastDateTime::now()), to_value!(data.id)]).await?;
+                    }
+                    None => return Err(Error::E("分类不存在".to_string()))
+                }
+            }
+            Err(_) => {
+                tx.rollback().await.unwrap();
+                println!("rollback")
+            }
+        }
+        tx.commit().await.unwrap();
+        println!("commit");
+        drop(tx);
+        sleep(Duration::from_secs(1));
+        Ok(())
     }
 }
