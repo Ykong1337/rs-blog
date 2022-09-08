@@ -86,7 +86,7 @@ impl Article {
         let mut tx = tx.defer_async(|mut tx| async move {
             if !tx.done {
                 tx.rollback().await.unwrap();
-                println!("rollback");
+                println!("rollback")
             }
         });
 
