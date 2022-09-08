@@ -95,7 +95,7 @@ impl Article {
             Ok(res) => {
                 let new_art_id = res.last_insert_id;
                 for i in tag_ids.iter() {
-                    tx.exec("INSERT INTO article_to_tag (article_id,tag_id) VALUE (?,?);", vec![to_value!(new_art_id.as_u64()), to_value!(*i)]).await;
+                    tx.exec("INSERT INTO article_to_tag (article_id,tag_id) VALUE (?,?);", vec![to_value!(new_art_id.as_u64()), to_value!(*i)]).await?;
                 }
             }
             Err(_) => {
@@ -109,5 +109,35 @@ impl Article {
         drop(tx);
         sleep(Duration::from_secs(1));
         Ok(())
+    }
+
+    pub async fn remove(id: usize) -> Result<(), Error> {
+        let art = Self::find_by_id(id).await;
+        match art {
+            Ok(t) => {
+                match t {
+                    Some(data) => {
+                        let tx = RB.acquire_begin().await.unwrap();
+                        let mut tx = tx.defer_async(|mut tx| async move {
+                            if !tx.done {
+                                tx.rollback().await.unwrap();
+                                println!("rollback");
+                            }
+                        });
+                        tx.exec("DELETE FROM article_to_tag WHERE article_id = ?;", vec![to_value!(data.id)]).await?;
+                        tx.exec("DELETE FROM article WHERE id = ?;", vec![to_value!(id)]).await?;
+
+                        tx.commit().await.unwrap();
+                        println!("commit");
+                        drop(tx);
+                        sleep(Duration::from_secs(1));
+
+                        Ok(())
+                    }
+                    None => return Err(Error::E("文章不存在".to_string()))
+                }
+            }
+            Err(_) => return Err(Error::E("error".to_string()))
+        }
     }
 }

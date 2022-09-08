@@ -60,6 +60,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                    article_controller::detail,
                    article_controller::hot,
                    article_controller::create,
+                   article_controller::delete,
         ])
         .register("/", catchers![not_found])
         .attach(AdHoc::on_ignite("Rbatis Database", |rocket| async move {

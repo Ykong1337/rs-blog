@@ -113,3 +113,20 @@ pub async fn create(post_data: Json<PostOrPutArticleData<'_>>, _t: Token) -> Val
         })
     }
 }
+
+#[delete("/article/<id>")]
+pub async fn delete(id: usize, _t: Token) -> Value {
+    let res = Article::remove(id).await;
+    match res {
+        Ok(_) => json!(Res {
+            code: 200,
+            msg: "success",
+            data: ()
+        }),
+        Err(_) => json!(Res {
+            code: 500,
+            msg: "error",
+            data: ()
+        })
+    }
+}
