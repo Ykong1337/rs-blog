@@ -1,6 +1,6 @@
 use std::error::Error;
 use std::sync::Arc;
-use fast_log::Config;
+use fast_log::{Config, init};
 use jwt_simple::algorithms::HS256Key;
 use once_cell::sync::Lazy;
 use rbatis::Rbatis;
@@ -34,9 +34,10 @@ pub async fn not_found(req: &Request<'_>) -> String {
 
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    fast_log::init(Config::new().console()).unwrap();
+    init(Config::new().console()).expect("log init error");
     let rb = Arc::new(&RB);
-    RB.init(MysqlDriver {}, "mysql://root:root@127.0.0.1:3306/rustblog").unwrap();
+    let database_url = dotenv::var("DATABASE_URL").expect("db url error");
+    RB.init(MysqlDriver {}, &database_url).expect("RB init error");
     let _ = rocket::build()
         .mount("/api",
                routes![
