@@ -37,7 +37,6 @@ impl Category {
         RB.fetch_decode("select id,name,created_at,updated_at, (select count(*) from article where category.id = article.cate_id) as blog_count from category", vec![]).await
     }
 
-
     pub async fn create(name: &str) -> Result<ExecResult, Error> {
         let category = Category {
             id: None,

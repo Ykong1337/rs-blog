@@ -50,6 +50,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                    tag_controller::del,
                    tag_controller::find_by_name,
                    tag_controller::find_list_count,
+                   tag_controller::tag_arts,
                    category_controller::find_by_name,
                    category_controller::list,
                    category_controller::list_count,
@@ -57,11 +58,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
                    category_controller::update,
                    category_controller::del,
                    article_controller::list,
+                   article_controller::list_with_category,
+                   article_controller::editing,
+                   article_controller::with_category,
                    article_controller::detail,
                    article_controller::hot,
                    article_controller::create,
                    article_controller::delete,
                    article_controller::update,
+                   article_controller::search,
+                   article_controller::home_search,
         ])
         .register("/", catchers![not_found])
         .attach(AdHoc::on_ignite("Rbatis Database", |rocket| async move {

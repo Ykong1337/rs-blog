@@ -30,7 +30,7 @@ pub async fn find_by_name(name: &str) -> Value {
     }
 }
 
-#[get("/tag/list")]
+#[get("/tags")]
 pub async fn list() -> Value {
     match Tag::find_list_all().await {
         Ok(data) => {
@@ -49,6 +49,26 @@ pub async fn list() -> Value {
             data: ()
         })
     }
+}
+
+#[get("/tag/arts/<id>")]
+pub async fn tag_arts(id: usize) -> Value {
+    let articles = Tag::find_one_count(id).await;
+    if let Ok(data) = articles {
+        if data.is_empty() {
+            return json!(Res {
+                code: 400,
+                msg: "数据为空",
+                data: ()
+            });
+        }
+        return json!(Res::ok(data));
+    }
+    json!(Res {
+        code: 500,
+        msg: "服务错误",
+        data: ()
+    })
 }
 
 #[get("/tag/list_count")]

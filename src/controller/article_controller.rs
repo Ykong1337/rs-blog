@@ -64,6 +64,68 @@ pub async fn detail(id: usize) -> Value {
     }
 }
 
+#[get("/article/category")]
+pub async fn list_with_category() -> Value {
+    let res = Article::find_all_with_category().await;
+    match res {
+        Ok(data) => {
+            if data.is_empty() {
+                return json!(Res {
+                    code: 400,
+                    msg: "null",
+                    data: ()
+                });
+            }
+            json!(Res::ok(data))
+        }
+        Err(_) => json!(Res {
+            code: 500,
+            msg: "error",
+            data: ()
+        })
+    }
+}
+
+#[get("/article/editing/<id>")]
+pub async fn editing(id: usize) -> Value {
+    let res = Article::find_editing_by_id(id).await;
+    if let Ok(t) = res {
+        return match t {
+            Some(data) => json!(Res::ok(data)),
+            None => json!(Res {
+                code: 400,
+                msg: "null",
+                data: ()
+            })
+        };
+    }
+    json!(Res {
+        code: 500,
+        msg: "error",
+        data: ()
+    })
+}
+
+#[get("/article/category/<id>")]
+pub async fn with_category(id: usize) -> Value {
+    let res = Article::find_by_id_with_category(id).await;
+    if let Ok(t) = res {
+        return match t {
+            Some(data) => json!(Res::ok(data)),
+            None => json!(Res {
+                code: 400,
+                msg: "null",
+                data: ()
+            })
+        };
+    }
+    json!(Res {
+        code: 500,
+        msg: "error",
+        data: ()
+    })
+}
+
 #[get("/article/hot")]
 pub async fn hot() -> Value {
     let hots = Article::find_hot().await;
@@ -148,6 +210,58 @@ pub async fn update(id: usize, put_data: Json<PostOrPutArticleData<'_>>, _t: Tok
             msg: "success",
             data: ()
         }),
+        Err(_) => json!(Res {
+            code: 500,
+            msg: "error",
+            data: ()
+        })
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, FromForm)]
+pub struct SearchData<'a> {
+    title: &'a str,
+    category: usize,
+}
+
+#[get("/article/search?<data>")]
+pub async fn search(data: SearchData<'_>) -> Value {
+    let title = data.title;
+    let category = data.category;
+    let res = Article::search(title, category).await;
+    match res {
+        Ok(data) => {
+            if data.is_empty() {
+                return json!(Res {
+                    code: 400,
+                    msg: "null",
+                    data: ()
+                });
+            }
+            json!(Res::ok(data))
+        }
+        Err(_) => json!(Res {
+            code: 500,
+            msg: "error",
+            data: ()
+        })
+    }
+}
+
+#[get("/article/search/<word>")]
+pub async fn home_search(word: &str) -> Value {
+    let res = Article::home_search(word).await;
+    match res {
+        Ok(data) => {
+            if data.is_empty() {
+                return json!(Res {
+                    code: 400,
+                    msg: "null",
+                    data: ()
+                });
+            }
+            json!(Res::ok(data))
+        }
         Err(_) => json!(Res {
             code: 500,
             msg: "error",

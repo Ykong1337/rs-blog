@@ -51,6 +51,9 @@ pub struct ArticleForUpdateVo {
 crud!(Article {});
 impl_select!(Article {select_by_id(id: usize) -> Option => "`where id = #{id}`"});
 impl_select!(Article {select_hot() => "`limit 5`"});
+impl_select!(Article {select_by_cate_id(category: usize) => "`where cate_id = #{category}`"});
+impl_select!(Article {select_by_title(title: &str) => "`where title like '%${title}%'`"});
+impl_select!(Article {select_by_cate_title(title: &str, category: usize) => "`where title like '%${title}%' and cate_id = #{category}`"});
 
 impl Article {
     pub async fn find_total() -> Result<usize, Error> {
@@ -182,5 +185,25 @@ impl Article {
         drop(tx);
         sleep(Duration::from_secs(1));
         Ok(())
+    }
+
+    pub async fn search(title: &str, category: usize) -> Result<Vec<Article>, Error> {
+        if title == "".to_string() && category != 0 {
+            return Self::select_by_cate_id(&mut RB.clone(), category).await;
+        }
+        if title == "".to_string() && category == 0 {
+            return Self::select_all(&mut RB.clone()).await;
+        }
+        if title != "".to_string() && category == 0 {
+            return Self::select_by_title(&mut RB.clone(), title).await;
+        }
+        if title != "".to_string() && category != 0 {
+            return Self::select_by_cate_title(&mut RB.clone(), title, category).await;
+        }
+        Self::select_all(&mut RB.clone()).await
+    }
+
+    pub async fn home_search(word: &str) -> Result<Vec<Article>, Error> {
+        Self::select_by_title(&mut RB.clone(), word).await
     }
 }

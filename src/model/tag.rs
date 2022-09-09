@@ -1,6 +1,8 @@
 use rbatis::rbdc::datetime::FastDateTime;
 use rbatis::rbdc::db::ExecResult;
 use rbatis::rbdc::Error;
+use rbs::to_value;
+use crate::model::article::Article;
 use crate::RB;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -38,9 +40,9 @@ impl Tag {
         RB.fetch_decode("select id, name, created_at, updated_at, (select count(*) from article inner join article_to_tag on article.id = article_to_tag.article_id where tag.id = article_to_tag.tag_id) as blog_count from tag", vec![]).await
     }
 
-    // pub async fn find_one_count(id: usize) -> Result<Vec<Article>, Error> {
-    //     RB.fetch_decode("SELECT a.* FROM article a WHERE a.id IN (SELECT at2.article_id FROM article_tag at2 WHERE at2.tag_id = ?)", vec![U64(id as u64)]).await
-    // }
+    pub async fn find_one_count(id: usize) -> Result<Vec<Article>, Error> {
+        RB.fetch_decode("SELECT a.* FROM article a WHERE a.id IN (SELECT at2.article_id FROM article_tag at2 WHERE at2.tag_id = ?)", vec![to_value!(id)]).await
+    }
 
     pub async fn create(name: &str) -> Result<ExecResult, Error> {
         let tag = Tag {
