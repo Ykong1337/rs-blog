@@ -11,7 +11,7 @@
  Target Server Version : 80030
  File Encoding         : 65001
 
- Date: 07/09/2022 19:31:21
+ Date: 21/09/2022 08:45:50
 */
 
 SET NAMES utf8mb4;
@@ -28,18 +28,18 @@ CREATE TABLE `article`  (
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `cate_id` int UNSIGNED NOT NULL,
   `istop` int NOT NULL DEFAULT 0,
-  `created_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `updated_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `article_FK`(`cate_id` ASC) USING BTREE,
   CONSTRAINT `article_FK` FOREIGN KEY (`cate_id`) REFERENCES `category` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of article
 -- ----------------------------
 INSERT INTO `article` VALUES (1, 'test', 'test', 'test', 1, 0, '2022-09-04 10:38:02', '2022-09-04 10:38:02');
-INSERT INTO `article` VALUES (6, 'test1', 'asdsadasd', 'asdfasefafefdf', 1, 0, '2022-09-07 19:27:10', '2022-09-07 19:27:10');
+INSERT INTO `article` VALUES (6, 'about', 'a test', 'test ##context', 1, 0, '2022-09-07 19:27:10', '2022-09-08 09:48:40');
 
 -- ----------------------------
 -- Table structure for article_to_tag
@@ -67,8 +67,8 @@ DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `created_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `updated_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
@@ -85,8 +85,8 @@ DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `created_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `updated_at` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 

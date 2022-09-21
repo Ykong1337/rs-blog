@@ -27,7 +27,7 @@ pub fn encode(password: &str) -> String {
 
 impl User {
     pub async fn login(username: &str, password: &str) -> Result<Option<User>, Error> {
-        Self::select_username_password(&mut RB.clone(), username, encode(password).as_str()).await
+        Self::select_username_password(&mut RB.clone(), username, &encode(password)).await
     }
 
     pub async fn find_list() -> Result<Vec<User>, Error> {
